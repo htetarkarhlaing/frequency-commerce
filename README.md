@@ -44,3 +44,7 @@ https://dbdiagram.io/d/Frequency-Commerce-636078ce5170fb6441d3b133
 ## Author
 
 - [@htetarkarhlaing](https://www.github.com/htetarkarhlaing) Full-stack javascript developer
+
+**TBH** 
+
+*I am very new to GraphQL. This is my very first GraphQL project that I have learned and implemented within just three days.*
