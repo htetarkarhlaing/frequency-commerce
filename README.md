@@ -1,50 +1,56 @@
 
-# Frequency-Commerce
+## Deployment
 
-This Inventory Management System is built with the NestJS framework, utilizing Prisma as its ORM and MongoDB as the database. It provides efficient inventory management, order tracking, and user authentication functionalities. With Apollo Server integrated, it enables GraphQL API endpoints for seamless communication between the client and server. The application's modular architecture offers scalability and flexibility while maintaining code clarity.
-## Tech Stack
+To deploy this project follow the instruction below
 
-| Scope             | Library                                                               |
-| ----------------- | --------------------------------------------------------------------- |
-| Core framework    | [Nest Js](https://nestjs.com/) |
-| Technology        | [GraphQL](https://docs.nestjs.com/graphql/quick-start)|
-| Database  | [MongoDb](https://www.mongodb.com/)         |
-| ORM   | [Prisma](https://www.prisma.io/) |
+**Step 1.**
 
+```bash
+  git clone https://github.com/htetarkarhlaing/frequency-commerce
+```
 
-### Features
+**Step 2.**
 
-1. **Auth Service**:
-   - User authentication and authorization.
-   - User roles and permissions management.
+```bash
+  cd frequency-commerce
+```
 
-2. **Inventory Service**:
-   - Category management for organizing products.
-   - Product management including name, image, description, price, and stock.
-   - Purchase record management to track product purchases.
-   - Stock adjustment record management to track changes in stock.
+**Step 3.**
 
-3. **Order Service**:
-   - Order record management to track orders.
-   - Order detail management including the product, quantity, and total price.
-4. **Realtime Order Tracking Service**:
-    - Order record can be track in realtime
-    - Multiple Order shipping stage tracker
+```bash
+  npm install
+```
 
-These are the main features described in the Prisma schema. The schema represents the structure and relationships between entities in the application's data model.
-## DB diagram.io
+**Step 4.**
 
-https://dbdiagram.io/d/Frequency-Commerce-636078ce5170fb6441d3b133
+create **.env** file at the root of the project and copy the required sample data from **.env.example**. Then change the necessary data with your credentials like **database URL** and **JWT Secrets**. After you create the **.env** please run the CMD below to sync the database schema.
 
-## License
+```bash
+  npx prisma migrate
+```
 
-[MIT](https://choosealicense.com/licenses/mit/)
+**Step 5.**
 
+Our system need based role and permissions to register the accounts, so please run the seeder to ensure that we have everything we need to start the service.
 
-## Author
+```bash
+  npm run seed
+```
 
-- [@htetarkarhlaing](https://www.github.com/htetarkarhlaing) Full-stack javascript developer
+**Step 6.**
 
-**TBH** 
+```bash
+  npm run build
+```
 
-*I am very new to GraphQL. This is my very first GraphQL project that I have learned and implemented within just three days.*
+**Step 6.**
+
+```bash
+  npm run start
+```
+
+After you start the server, try to open the graphQL playground that is already hosted below
+
+[GraphQL Playground](http://localhost:3000/graphql)
+
+Enjoy your testing.
