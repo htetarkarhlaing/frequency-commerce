@@ -1,0 +1,55 @@
+scalar Upload
+
+type Query {
+  getProduct(id: String!): Product
+  getProducts: [Product!]!
+}
+
+type Mutation {
+  createProduct(data: CreateProductInput!, image: Upload!): Product!
+  updateProduct(id: String!, data: UpdateProductInput!): Product!
+  deleteProduct(id: String!): Product
+  uploadProductImage(productId: String!, file: Upload!): Product!
+}
+
+type Product {
+  id: String!
+  name: String!
+  image: String
+  description: String
+  price: Float!
+  stock: Int!
+  createdById: String
+  createdBy: User
+  categoryId: String
+  Category: Category
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+  PurchaseRecord: [PurchaseRecord!]!
+  StockAdjustmentRecord: [StockAdjustmentRecord!]!
+  OrderDetail: [OrderDetail!]!
+}
+
+input CreateProductInput {
+  name: String!
+  image: String
+  description: String
+  price: Float!
+  createdById: String
+  categoryId: String
+}
+
+input UpdateProductInput {
+  name: String
+  description: String
+  price: Float
+  createdById: String
+  categoryId: String
+}
+
+type File {
+  filename: String!
+  mimetype: String!
+  encoding: String!
+}

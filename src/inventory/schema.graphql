@@ -1,0 +1,52 @@
+type Query {
+  getPurchaseRecord(id: String!): PurchaseRecord
+  getPurchaseRecords: [PurchaseRecord!]!
+  getAdjustmentRecord(id: String!): StockAdjustmentRecord
+  getAdjustmentRecords: [StockAdjustmentRecord!]!
+}
+
+type Mutation {
+  createPurchaseRecord(data: CreatePurchaseRecordInput!): PurchaseRecord!
+  createAdjustmentRecord(data: CreateAdjustmentRecordInput!): StockAdjustmentRecord!
+}
+
+input CreatePurchaseRecordInput {
+  productId: String!
+  amount: Int!
+}
+
+input CreateAdjustmentRecordInput {
+  productId: String!
+  amount: Int!
+  adjustmentType: AdjustmentType!
+}
+
+type PurchaseRecord {
+  id: String!
+  productId: String
+  Product: Product
+  createdById: String
+  CreatedBy: User
+  amount: Int!
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type StockAdjustmentRecord {
+  id: String!
+  productId: String
+  Product: Product
+  createdById: String
+  CreatedBy: User
+  amount: Int!
+  status: Status!
+  adjustmentType: AdjustmentType!
+  createdAt: String!
+  updatedAt: String!
+}
+
+enum AdjustmentType {
+  ADD
+  REMOVE
+}

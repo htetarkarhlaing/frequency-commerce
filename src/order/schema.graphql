@@ -1,0 +1,66 @@
+type Subscription {
+  OrderStatusChange(orderId: String!): OrderRecord
+}
+
+type Query {
+  getOrderRecord(id: String!): PurchaseRecord
+  getOrderRecords: [PurchaseRecord!]!
+}
+
+type Mutation {
+  createOrderRecord(data: CreateOrderRecordInput!): OrderRecord!
+  manageOrderRecord(data: ManageOrderRecord!): OrderRecord!
+}
+
+input ManageOrderRecord {
+  id: String!
+  orderStatus: OrderStatus!
+}
+
+input CreateOrderRecordInput {
+  totalAmount: Float!
+  detail: [OrderRecordDetail!]!
+}
+
+input OrderRecordDetail {
+  productId: String!
+  qty: Int!
+  unitPrice: Float!
+}
+
+type OrderRecord {
+  id: String!
+  orderCreatedById: String!
+  OrderCreatedBy: User
+  orderApprovedById: String!
+  OrderApprovedBy: User
+  totalAmount: Float!
+  orderStatus: OrderStatus!
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+  OrderDetail: [OrderDetail!]!
+}
+
+type OrderDetail {
+  id: String!
+  productId: String!
+  Product: Product
+  orderRecordId: String!
+  OrderRecord: OrderRecord
+  qty: Int!
+  unitPrice: Float!
+  total: Float!
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+}
+
+enum OrderStatus {
+  IN_REVIEW
+  ACCEPTED
+  REJECTED
+  PACKAGING
+  SHIPPING
+  DELIVERED
+}

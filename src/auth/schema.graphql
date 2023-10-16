@@ -1,0 +1,73 @@
+type Query {
+  getUser(id: String!): User
+  getUsers: [User!]!
+  whoAmI: User!
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): User!
+  updateUser(data: UpdateUserInput!): User!
+  login(data: UserLoginInput!): Tokens
+}
+
+type Tokens {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type User {
+  id: String!
+  email: String!
+  password: String!
+  username: String
+  address: String
+  dateOfBirth: String
+  userStatus: UserStatus!
+  refreshToken: String
+  fcmToken: String
+  userRole: UserRole!
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+  Category: [Category!]!
+  Product: [Product!]!
+  PurchaseRecord: [PurchaseRecord!]!
+  StockAdjustmentRecord: [StockAdjustmentRecord!]!
+  CreatedOrderRecord: [OrderRecord!]!
+  ApprovedOrderRecord: [OrderRecord!]!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+  userRole: UserRole
+  status: Status
+}
+
+input UpdateUserInput {
+  email: String!
+  username: String
+  address: String
+  dateOfBirth: String
+}
+
+input UserLoginInput {
+  email: String!
+  password: String!
+}
+
+enum Status {
+  ACTIVE
+  DELETED
+}
+
+enum UserStatus {
+  APPROVED
+  PENDING
+  SUSPENDED
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+}

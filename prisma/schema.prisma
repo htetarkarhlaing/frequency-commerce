@@ -1,0 +1,197 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// * -------------------------------------------- Auth Service -----------------------------------------------
+
+model User {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  email        String     @unique
+  password     String
+  username     String?
+  address      String?
+  dateOfBirth  DateTime?
+  userStatus   UserStatus @default(PENDING)
+  refreshToken String?
+  fcmToken     String?
+  userRole     UserRole   @default(ADMIN)
+  roleId       String?    @db.ObjectId
+  Role         Role?      @relation(references: [id], fields: [roleId], onDelete: SetNull)
+  status       Status     @default(ACTIVE)
+
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  Category              Category[]
+  Product               Product[]
+  PurchaseRecord        PurchaseRecord[]
+  StockAdjustmentRecord StockAdjustmentRecord[]
+  CreatedOrderRecord    OrderRecord[]           @relation("createdOrder")
+  ApprovedOrderRecord   OrderRecord[]           @relation("approvedOrder")
+}
+
+model Role {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String @unique
+  status Status @default(ACTIVE)
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  RoleOnPermissions RoleOnPermissions[]
+  User              User[]
+}
+
+model Permission {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String @unique
+  access String
+  status Status @default(ACTIVE)
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  RoleOnPermissions RoleOnPermissions[]
+}
+
+model RoleOnPermissions {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  permissionId String?     @db.ObjectId
+  Permission   Permission? @relation(references: [id], fields: [permissionId], onDelete: SetNull)
+  roleId       String?     @db.ObjectId
+  Role         Role?       @relation(references: [id], fields: [roleId], onDelete: SetNull)
+  status       Status      @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// * ---------------------------------------- Inventory Service -----------------------------------------------
+model Category {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String  @unique
+  createdById String? @db.ObjectId
+  CreatedBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  status      Status  @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Product   Product[]
+}
+
+model Product {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String  @unique
+  image       String?
+  description String
+  price       Float   @default(0.0)
+  stock       Int     @default(0)
+
+  createdById String?   @db.ObjectId
+  CreatedBy   User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  categoryId  String?   @db.ObjectId
+  Category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  status      Status    @default(ACTIVE)
+
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  PurchaseRecord        PurchaseRecord[]
+  StockAdjustmentRecord StockAdjustmentRecord[]
+  OrderDetail           OrderDetail[]
+}
+
+model PurchaseRecord {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String?  @db.ObjectId
+  Product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  createdById String?  @db.ObjectId
+  CreatedBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  amount      Int      @default(0)
+  status      Status   @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StockAdjustmentRecord {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  productId      String?        @db.ObjectId
+  Product        Product?       @relation(fields: [productId], references: [id], onDelete: SetNull)
+  createdById    String?        @db.ObjectId
+  CreatedBy      User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  amount         Int            @default(0)
+  adjustmentType AdjustmentType @default(ADD)
+  status         Status         @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// * -------------------------------------------- Order Service ---------------------------------------------------
+model OrderRecord {
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderCreatedById  String?     @db.ObjectId
+  OrderCreatedBy    User?       @relation("createdOrder", fields: [orderCreatedById], references: [id], onDelete: SetNull)
+  orderApprovedById String?     @db.ObjectId
+  OrderApprovedBy   User?       @relation("approvedOrder", fields: [orderApprovedById], references: [id], onDelete: SetNull)
+  totalAmount       Float       @default(0.0)
+  orderStatus       OrderStatus @default(IN_REVIEW)
+  status            Status      @default(ACTIVE)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  OrderDetail OrderDetail[]
+}
+
+model OrderDetail {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  productId     String?      @db.ObjectId
+  Product       Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+  orderRecordId String?      @db.ObjectId
+  OrderRecord   OrderRecord? @relation(fields: [orderRecordId], references: [id], onDelete: SetNull)
+  qty           Int          @default(0)
+  unitPrice     Float        @default(0.0)
+  total         Float        @default(0.0)
+  status        Status       @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// * ------------------------------------------------ Enum --------------------------------------------------------
+
+enum Status {
+  ACTIVE
+  DELETED
+}
+
+enum UserStatus {
+  APPROVED
+  PENDING
+  SUSPENDED
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+}
+
+enum AdjustmentType {
+  ADD
+  REMOVE
+}
+
+enum OrderStatus {
+  IN_REVIEW
+  ACCEPTED
+  REJECTED
+  PACKAGING
+  SHIPPING
+  DELIVERED
+}

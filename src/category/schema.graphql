@@ -1,0 +1,29 @@
+type Category {
+  id: String!
+  name: String!
+  createdById: String
+  CreatedBy: User
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+  Product: [Product!]!
+}
+
+extend type Query {
+  getCategory(id: String!): Category
+  getCategories: [Category!]!
+}
+
+type Mutation {
+  createCategory(data: CreateCategoryInput!): Category!
+}
+
+input CreateCategoryInput {
+  name: String!
+  createdById: String
+}
+
+input UpdateCategoryInput {
+  name: String
+  createdById: String
+}

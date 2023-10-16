@@ -1,0 +1,199 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  email String [unique, not null]
+  password String [not null]
+  username String
+  address String
+  dateOfBirth DateTime
+  userStatus UserStatus [not null, default: 'PENDING']
+  refreshToken String
+  fcmToken String
+  userRole UserRole [not null, default: 'ADMIN']
+  roleId String
+  Role Role
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  Category Category [not null]
+  Product Product [not null]
+  PurchaseRecord PurchaseRecord [not null]
+  StockAdjustmentRecord StockAdjustmentRecord [not null]
+  CreatedOrderRecord OrderRecord [not null]
+  ApprovedOrderRecord OrderRecord [not null]
+}
+
+Table Role {
+  id String [pk]
+  name String [unique, not null]
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  RoleOnPermissions RoleOnPermissions [not null]
+  User User [not null]
+}
+
+Table Permission {
+  id String [pk]
+  name String [unique, not null]
+  access String [not null]
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  RoleOnPermissions RoleOnPermissions [not null]
+}
+
+Table RoleOnPermissions {
+  id String [pk]
+  permissionId String
+  Permission Permission
+  roleId String
+  Role Role
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Category {
+  id String [pk]
+  name String [unique, not null]
+  createdById String
+  CreatedBy User
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  Product Product [not null]
+}
+
+Table Product {
+  id String [pk]
+  name String [unique, not null]
+  image String
+  description String [not null]
+  price Float [not null, default: 0]
+  stock Int [not null, default: 0]
+  createdById String
+  CreatedBy User
+  categoryId String
+  Category Category
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  PurchaseRecord PurchaseRecord [not null]
+  StockAdjustmentRecord StockAdjustmentRecord [not null]
+  OrderDetail OrderDetail [not null]
+}
+
+Table PurchaseRecord {
+  id String [pk]
+  productId String
+  Product Product
+  createdById String
+  CreatedBy User
+  amount Int [not null, default: 0]
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table StockAdjustmentRecord {
+  id String [pk]
+  productId String
+  Product Product
+  createdById String
+  CreatedBy User
+  amount Int [not null, default: 0]
+  adjustmentType AdjustmentType [not null, default: 'ADD']
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table OrderRecord {
+  id String [pk]
+  orderCreatedById String
+  OrderCreatedBy User
+  orderApprovedById String
+  OrderApprovedBy User
+  totalAmount Float [not null, default: 0]
+  orderStatus OrderStatus [not null, default: 'IN_REVIEW']
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  OrderDetail OrderDetail [not null]
+}
+
+Table OrderDetail {
+  id String [pk]
+  productId String
+  Product Product
+  orderRecordId String
+  OrderRecord OrderRecord
+  qty Int [not null, default: 0]
+  unitPrice Float [not null, default: 0]
+  total Float [not null, default: 0]
+  status Status [not null, default: 'ACTIVE']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Enum Status {
+  ACTIVE
+  DELETED
+}
+
+Enum UserStatus {
+  APPROVED
+  PENDING
+  SUSPENDED
+}
+
+Enum UserRole {
+  ADMIN
+  MEMBER
+}
+
+Enum AdjustmentType {
+  ADD
+  REMOVE
+}
+
+Enum OrderStatus {
+  IN_REVIEW
+  ACCEPTED
+  REJECTED
+  PACKAGING
+  SHIPPING
+  DELIVERED
+}
+
+Ref: User.roleId > Role.id [delete: Set Null]
+
+Ref: RoleOnPermissions.permissionId > Permission.id [delete: Set Null]
+
+Ref: RoleOnPermissions.roleId > Role.id [delete: Set Null]
+
+Ref: Category.createdById > User.id [delete: Set Null]
+
+Ref: Product.createdById > User.id [delete: Set Null]
+
+Ref: Product.categoryId > Category.id [delete: Set Null]
+
+Ref: PurchaseRecord.productId > Product.id [delete: Set Null]
+
+Ref: PurchaseRecord.createdById > User.id [delete: Set Null]
+
+Ref: StockAdjustmentRecord.productId > Product.id [delete: Set Null]
+
+Ref: StockAdjustmentRecord.createdById > User.id [delete: Set Null]
+
+Ref: OrderRecord.orderCreatedById > User.id [delete: Set Null]
+
+Ref: OrderRecord.orderApprovedById > User.id [delete: Set Null]
+
+Ref: OrderDetail.productId > Product.id [delete: Set Null]
+
+Ref: OrderDetail.orderRecordId > OrderRecord.id [delete: Set Null]

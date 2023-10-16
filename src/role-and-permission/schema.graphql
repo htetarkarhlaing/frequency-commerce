@@ -1,0 +1,68 @@
+type Query {
+  getRole(id: String!): Role
+  getRoles: [Role!]!
+  getPermission(id: String!): Permission
+  getPermissions: [Permission!]!
+}
+
+type Mutation {
+  createRole(data: CreateRoleInput!): Role!
+  updateRole(id: String!, data: UpdateRoleInput!): Role!
+  deleteRole(id: String!): Role
+  createPermission(data: CreatePermissionInput!): Permission!
+  updatePermission(id: String!, data: UpdatePermissionInput!): Permission!
+  deletePermission(id: String!): Permission
+}
+
+type Role {
+  id: String!
+  name: String!
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+  RoleOnPermissions: [RoleOnPermissions!]
+}
+
+input CreateRoleInput {
+  name: String!
+  permissionList: [String!]
+  status: Status
+}
+
+input UpdateRoleInput {
+  name: String
+  status: Status
+}
+
+type Permission {
+  id: String!
+  name: String!
+  access: String!
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+  RoleOnPermissions: [RoleOnPermissions!]
+}
+
+input CreatePermissionInput {
+  name: String!
+  access: String
+  status: Status
+}
+
+input UpdatePermissionInput {
+  name: String
+  access: String
+  status: Status
+}
+
+type RoleOnPermissions {
+  id: String!
+  permissionId: String
+  Permission: Permission
+  roleId: String
+  Role: Role
+  status: Status!
+  createdAt: String!
+  updatedAt: String!
+}
